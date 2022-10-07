@@ -2,14 +2,19 @@ package syncmap
 
 import "sync"
 
-// sync.Map的泛型封装
 type SyncMap[KeyT, ValueT any] struct {
 	syncMap sync.Map
 }
 
 func (p SyncMap[KeyT, ValueT]) Load(key KeyT) (ValueT, bool) {
 	value, ok := p.syncMap.Load(key)
-	return value.(ValueT), ok
+	if ok {
+		return value.(ValueT), ok
+	} else {
+		var T ValueT
+		return T, ok
+	}
+
 }
 func (p SyncMap[KeyT, ValueT]) Store(key KeyT, value ValueT) {
 	p.syncMap.Store(key, value)
@@ -21,7 +26,12 @@ func (p SyncMap[KeyT, ValueT]) LoadOrStore(key KeyT, value ValueT) (ValueT, bool
 
 func (p SyncMap[KeyT, ValueT]) LoadAndDelete(key KeyT) (ValueT, bool) {
 	value, ok := p.syncMap.LoadAndDelete(key)
-	return value.(ValueT), ok
+	if ok {
+		return value.(ValueT), ok
+	} else {
+		var T ValueT
+		return T, ok
+	}
 }
 
 func (p SyncMap[KeyT, ValueT]) Delete(key KeyT) {
