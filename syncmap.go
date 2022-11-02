@@ -44,3 +44,12 @@ func (p *SyncMap[KeyT, ValueT]) Range(f func(key KeyT, value ValueT) bool) {
 		return f(key.(KeyT), value.(ValueT))
 	})
 }
+
+func (p *SyncMap[KeyT, ValueT]) Len() int {
+	count := 0
+	p.syncMap.Range(func(key, value any) bool {
+		count += 1
+		return true
+	})
+	return count
+}
